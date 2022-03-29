@@ -7,16 +7,17 @@ public class BankClient{
 
         String[] fileList;
         Scanner in = new Scanner(System.in);
-        int user, option, depositNum, withdraw, recUser;
+        int user, option, sendID;
+        String email, subject, body;
+        int message0, message1;
         boolean checkUser;
 
-        if(argv.length != 2) {
+        if(argv.length != 1) {
             System.out.println("Usage: java FileClient machineName ID");
             System.exit(0);
         }
         try {
             while(true) {
-                int clientID = Integer.parseInt(argv[1]);
                 String name = "//" + argv[0] + "/FileServer";
                 FileInterface fi = (FileInterface) Naming.lookup(name);
 
@@ -27,58 +28,41 @@ public class BankClient{
                 checkUser = fi.checkUser(user);
 
                 if(checkUser){
-                    //create user?
-                    System.out.print("\nBanking options currently are: \\n1. Deposit\\n2. Withdraw\\n3. View account\\n4. Download Account History \\n5. Send Money to Another User. \\nPlease enter the corresponding number to your option: ");
+                    System.out.print("\nEmail options: \n1. Send Email\n2. Check Inbox\nPlease enter the corresponding number to your option: ");
                     option = in.nextInt();
 
                     switch(option){
                         case 1:
-                            //deposit
-                            System.out.print("\nHow much would you like to deposit? ");
-                            depositNum = in.nextInt();
-                            fi.deposit(user, depositNum);
+                            //sending email
+                            System.out.print("\nEnter the ID of the user you want to email: ");
+                            sendID = in.nextInt();
+                            System.out.print("\nEnter the first message: ");
+                            Scanner in2 = new Scanner(System.in);
+                            message0 = in2.nextInt();
+                            System.out.print("\nEnter the second message: ");
+                            Scanner in3 = new Scanner(System.in);
+                            message1 = in3.nextInt();
+
+
+                            System.out.println(fi.OTP(message0, message1));
+
+                           // fi.sendEmail(sendID, subject, body);
                             break;
                         case 2:
-                            //withdraw
-                            System.out.print("\nHow much would you like to withdraw? ");
-                            withdraw = in.nextInt();
-                            fi.withdraw(user, withdraw);
-                            break;
-                        case 3:
-                            //view account
-                            break;
-                        case 4:
-                            //download account history file
-                            break;
-                        case 5:
-                            //e-transfer
-                            System.out.print("\nEnter user you would like to send money to: ");
-                            recUser = in.nextInt();
-                            System.out.print("\nHow much would you like to send? ");
-                            withdraw = in.nextInt();
-                            fi.eTransfer(user, withdraw, recUser);
+                            //checking email
+                            System.out.print("\nCurrent Inbox: ");
+                            System.out.println(fi.inbox(user));
+
+                            System.out.print("\nEnter the email you wish to read: ");
+                            Scanner in4 = new Scanner(System.in);
+                            email = in4.nextLine();
+                            System.out.println(fi.read(user, email));
                             break;
                     }
                 }
                 else{
                     //show options
                 }
-
-            /* The below is the code from lab 2 that was used to download a file
-            byte[] filedata = fi.downloadFile(argv[0], clientID);
-            File file = new File(argv[0]);
-            BufferedOutputStream output = new
-                    BufferedOutputStream(new FileOutputStream(file.getName()));
-            output.write(filedata,0,filedata.length);
-            System.out.println("Client Ready - remote stub active...");
-            output.flush();
-            output.close();
-            File files = new File("C:\\Users\\j9lso\\Documents\\Distributed Systems\\Labs\\Lab Two\\FileApp\\Server\\files");
-            fileList = files.list();
-            for(String str : fileList){
-                System.out.println(str);
-            }
-            System.out.println("File downloaded successfully.");*/
 
             }
         } catch(Exception e) {
