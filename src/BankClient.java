@@ -9,7 +9,7 @@ public class BankClient{
         Scanner in = new Scanner(System.in);
         int user, option, sendID;
         String email, subject, body;
-        int message0, message1;
+        long message0, message1;
         boolean checkUser;
 
         if(argv.length != 1) {
@@ -38,10 +38,10 @@ public class BankClient{
                             sendID = in.nextInt();
                             System.out.print("\nEnter the first message: ");
                             Scanner in2 = new Scanner(System.in);
-                            message0 = in2.nextInt();
+                            message0 = in2.nextLong();
                             System.out.print("\nEnter the second message: ");
                             Scanner in3 = new Scanner(System.in);
-                            message1 = in3.nextInt();
+                            message1 = in3.nextLong();
 
 
                             System.out.println(fi.OTP(message0, message1));

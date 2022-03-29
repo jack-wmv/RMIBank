@@ -96,12 +96,14 @@ public class FileImpl extends UnicastRemoteObject
         return "email sent";
     }
 
-    public int OTP(int message0, int message1) throws IOException{
-        int n = 187; //public
-        int e = 23; //public key
-        int d = 7; //private key
-        int[] ranMessages = {100, 200};
+    public long OTP(long message0, long message1) throws IOException{
+        long n = 187; //public
+        long e = 23; //public key
+        long d = 7; //private key
+        long x0 = (long)(Math.random()*100);
+        long x1 = (long)(Math.random()*100);
         Random random = new Random();
+        long v = 0;
 
 
         //get random messages
@@ -112,27 +114,56 @@ public class FileImpl extends UnicastRemoteObject
         int choice = (int)Math.round( Math.random());
         System.out.println("choice: " + choice);
 
-        int key = random.nextInt(10) + 1;
+        long key = (long)(Math.random()*100);
         System.out.println("key: " + key);
 
 
-        int encryptedV = (int)((ranMessages[choice] + Math.pow(key, e)) % n);
-        System.out.println("encyrypted V: " + encryptedV);
+        if(choice == 0){
+            v = x0 + fun(key,e,n);
+			if(v> n) v = v%n;
+        }
+        else{
+            v = x1 + fun(key,e,n);
+			if(v>n) v = v%n;
+        }
+        System.out.println("v: " + v);
 
-        int k0 = Math.abs((int)( Math.pow(encryptedV - ranMessages[0], d) % n));
-        int k1 = Math.abs((int)( Math.pow(encryptedV - ranMessages[1], d) % n));
+        long num1 = v - x0;
+        long num2 = v - x1;
+
+        long k0 = fun(num1, d, n);
+        long k1 = fun(num2, d, n);
         System.out.println("k0: " + k0 + "\nk1: " + k1);
 
-        int hiddenMessage = message0 + k0;
-        int hiddenMessage2 = message1 + k1;
+        
+        long hiddenMessage = message0 + k0;
+        long hiddenMessage2 = message1 + k1;
         System.out.println("hidden messages: \n1. " + hiddenMessage + "\n2. " + hiddenMessage2);
 
-        int[] hiddenMessages = {hiddenMessage, hiddenMessage2};
+        long[] hiddenMessages = {hiddenMessage, hiddenMessage2};
 
-        int decryptedMessage = hiddenMessages[choice] - key;
+        long decryptedMessage = hiddenMessages[choice] - key;
 
         System.out.print(decryptedMessage);
 
         return decryptedMessage;
     }
+
+    static long fun(long vx, long d, long n){
+		long k = 1;
+		for(long i=0;i<d;i++){
+			k = k*vx;
+			if(k>n) k = k%n;
+		}
+		return k;
+	}
+
+    static long getV(long k, long e, long n){
+		long v = 1;
+		for(long i=0;i<e;i++){
+			v = v*k;
+			if(v>n) v = v%n;
+		}
+		return v;
+	}
 }
