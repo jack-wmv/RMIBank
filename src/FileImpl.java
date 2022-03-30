@@ -96,14 +96,37 @@ public class FileImpl extends UnicastRemoteObject
         return "email sent";
     }
 
-    public long OTP(long message0, long message1) throws IOException{
+    public long OTP(String[] splited/*long message0, long message1 --- get arraylist of strings from subject, create x messages*/) throws IOException{
         long n = 187; //public
         long e = 23; //public key
         long d = 7; //private key
         long x0 = (long)(Math.random()*100);
         long x1 = (long)(Math.random()*100);
+        ArrayList<Long> messages = new ArrayList<Long>();
+        ArrayList<Long> ranMessages = new ArrayList<Long>();
+        ArrayList<Long> numbers = new ArrayList<Long>();
+        ArrayList<Long> hiddens = new ArrayList<Long>();
         Random random = new Random();
         long v = 0;
+        String t = "";
+
+        for(int i = 0; i < splited.length; i++){
+            for(int j = 0; j < splited[i].length(); j++){
+                String s = splited[i];
+                char ch = s.charAt(j);
+                int num = (int)ch - (int)'a' + 1;
+                t += String.valueOf(num);
+                System.out.println(t);
+            }
+            t += " ";
+        }
+
+        String[] splitNums = t.split("\\s+");
+
+        for(int z = 0; z < splitNums.length; z++){
+            long message = Long.parseLong(splitNums[z]);
+            messages.add(message);
+        }
 
 
         //get random messages
@@ -111,42 +134,36 @@ public class FileImpl extends UnicastRemoteObject
         //compute 2 keys and send to recipient
         //recipient receives original messages and decrypts using the key k and can see the original message
 
-        int choice = (int)Math.round( Math.random());
+        int choice = (int)Math.round( Math.random()*splitNums.length);
         System.out.println("choice: " + choice);
+
+        System.out.println("original message: " + messages.get(choice));
 
         long key = (long)(Math.random()*100);
         System.out.println("key: " + key);
 
+        for(int ab = 0; ab < splitNums.length; ab++){
+            ranMessages.add((long)(Math.random()*100));
+        }
 
-        if(choice == 0){
-            v = x0 + fun(key,e,n);
-			if(v> n) v = v%n;
-        }
-        else{
-            v = x1 + fun(key,e,n);
-			if(v>n) v = v%n;
-        }
+        v = ranMessages.get(choice) + fun(key, e, n);
+        if(v>n) v = v%n;
         System.out.println("v: " + v);
 
-        long num1 = v - x0;
-        long num2 = v - x1;
+        for(int c = 0; c < ranMessages.size(); c++){
+            numbers.add(v - ranMessages.get(c));
+        }
 
-        long k0 = fun(num1, d, n);
-        long k1 = fun(num2, d, n);
-        System.out.println("k0: " + k0 + "\nk1: " + k1);
+        for(int f = 0; f < numbers.size(); f++){
+            long k = fun(numbers.get(f), d, n);
+            hiddens.add(messages.get(f) + k);
+        }
 
-        
-        long hiddenMessage = message0 + k0;
-        long hiddenMessage2 = message1 + k1;
-        System.out.println("hidden messages: \n1. " + hiddenMessage + "\n2. " + hiddenMessage2);
-
-        long[] hiddenMessages = {hiddenMessage, hiddenMessage2};
-
-        long decryptedMessage = hiddenMessages[choice] - key;
+        long decryptedMessage = hiddens.get(choice) - key;
 
         System.out.print(decryptedMessage);
 
-        return decryptedMessage;
+       return decryptedMessage;
     }
 
     static long fun(long vx, long d, long n){

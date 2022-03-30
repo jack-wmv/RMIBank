@@ -1,5 +1,8 @@
 import java.io.*;
 import java.rmi.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class BankClient{
@@ -36,15 +39,19 @@ public class BankClient{
                             //sending email
                             System.out.print("\nEnter the ID of the user you want to email: ");
                             sendID = in.nextInt();
-                            System.out.print("\nEnter the first message: ");
+                            System.out.print("\nEnter the Subject (2 word minimum): ");
                             Scanner in2 = new Scanner(System.in);
-                            message0 = in2.nextLong();
-                            System.out.print("\nEnter the second message: ");
+                            subject = in2.nextLine();
+                            System.out.print("\nEnter the Body of the Email: ");
                             Scanner in3 = new Scanner(System.in);
-                            message1 = in3.nextLong();
+                            body = in3.nextLine();
+                            
+                            String[] splited = subject.split("\\s+");
+
+                            System.out.println(fi.OTP(splited));
 
 
-                            System.out.println(fi.OTP(message0, message1));
+                          //  System.out.println(fi.OTP(message0, message1));
 
                            // fi.sendEmail(sendID, subject, body);
                             break;
