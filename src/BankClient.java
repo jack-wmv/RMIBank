@@ -42,13 +42,14 @@ public class BankClient{
                             System.out.print("\nEnter the Subject (2 word minimum): ");
                             Scanner in2 = new Scanner(System.in);
                             subject = in2.nextLine();
+                            subject = subject.toLowerCase();
                             System.out.print("\nEnter the Body of the Email: ");
                             Scanner in3 = new Scanner(System.in);
                             body = in3.nextLine();
                             
                             String[] splited = subject.split("\\s+");
 
-                            System.out.println(fi.OTP(splited));
+                            System.out.println(fi.OTP(splited, subject, body, sendID));
 
 
                           //  System.out.println(fi.OTP(message0, message1));

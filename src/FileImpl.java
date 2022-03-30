@@ -96,7 +96,7 @@ public class FileImpl extends UnicastRemoteObject
         return "email sent";
     }
 
-    public long OTP(String[] splited/*long message0, long message1 --- get arraylist of strings from subject, create x messages*/) throws IOException{
+    public String OTP(String[] splited, String subject, String body, int recUser) throws IOException{
         long n = 187; //public
         long e = 23; //public key
         long d = 7; //private key
@@ -134,7 +134,7 @@ public class FileImpl extends UnicastRemoteObject
         //compute 2 keys and send to recipient
         //recipient receives original messages and decrypts using the key k and can see the original message
 
-        int choice = (int)Math.round( Math.random()*splitNums.length);
+        int choice = (int)Math.round( Math.random()*(splitNums.length - 1));
         System.out.println("choice: " + choice);
 
         System.out.println("original message: " + messages.get(choice));
@@ -163,7 +163,14 @@ public class FileImpl extends UnicastRemoteObject
 
         System.out.print(decryptedMessage);
 
-       return decryptedMessage;
+        if (messages.get(choice) == decryptedMessage){
+            sendEmail(recUser, subject, body);
+            return "Email authenticated and sent.";
+        }
+        else{
+            return "Connection could not be authenticated, email not sent";
+        }
+
     }
 
     static long fun(long vx, long d, long n){
