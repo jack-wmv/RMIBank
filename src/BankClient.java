@@ -70,6 +70,7 @@ public class BankClient{
                 }
                 else{
                     //show options
+                    System.out.println("User could not be authenticated.");
                 }
 
             }
